@@ -4,7 +4,7 @@ import { buildJokesPath, extractJokes } from "../api/jokes";
 function JokesPage(props) {
   const [jokeData, setJokeData] = useState();
   function loadJokeHandler(id) {
-    fetch(`/api/${id}`)
+    fetch(`/api/jokes/${id}`)
       .then((response) => response.json())
       .then((data) => setJokeData(data.joke));
   }

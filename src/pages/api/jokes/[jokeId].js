@@ -1,4 +1,4 @@
-import { buildJokesPath, extractJokes } from "./jokes";
+import { buildJokesPath, extractJokes } from ".";
 
 function handler(req, res) {
   const jokeId = req.query.jokeId;
