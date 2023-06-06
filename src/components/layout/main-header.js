@@ -5,12 +5,12 @@ function MainHeader() {
   return (
     <header className={classes.header}>
       <div className={classes.logo}>
-        <Link href="/">Pokemon Next</Link>
+        <Link href="/">Next.jokes</Link>
       </div>
       <nav className={classes.navigation}>
         <ul>
           <li>
-            <Link href="/pokemon">Browse All Pokemon!</Link>
+            <Link href="/jokes">See All Jokes!</Link>
           </li>
         </ul>
       </nav>
