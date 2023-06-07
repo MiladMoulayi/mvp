@@ -1,39 +1,43 @@
-import fs from "fs";
-import path from "path";
+import { MongoClient } from "mongodb";
 
-export function buildJokesPath() {
-  return path.join(process.cwd(), "data", "jokes.json");
-}
-
-export function extractJokes(filePath) {
-  const fileData = fs.readFileSync(filePath);
-  const data = JSON.parse(fileData);
-  return data;
-}
-
-function handler(req, res) {
+async function handler(req, res) {
   if (req.method === "POST") {
-    const setup = req.body.setup;
-    const punchline = req.body.punchline;
+    const { setup, punchline } = req.body;
 
     const newJoke = {
-      id: new Date().toISOString(),
       setup: setup,
       punchline: punchline,
     };
 
-    const filePath = buildJokesPath();
-    const data = extractJokes(filePath);
-    data.push(newJoke);
-    fs.writeFileSync(filePath, JSON.stringify(data));
+    let client;
+
+    try {
+      client = await MongoClient.connect(
+        "mongodb+srv://milad:WxvxmCo8HlrVRXAk@cluster0.hl61p42.mongodb.net/next-jokes?retryWrites=true&w=majority"
+      );
+    } catch (error) {
+      res.status(500).json({ message: "Could not connect to database" });
+      return;
+    }
+
+    const db = client.db();
+
+    try {
+      const result = await db.collection("jokes").insertOne(newJoke);
+      newJoke.id = result.insertedId;
+    } catch (error) {
+      client.close();
+      res
+        .status(500)
+        .json({ message: "Hold up! Our database broke it's funny bone..." });
+    }
+
+    client.close();
+
     res.status(201).json({
-      message: "Success!",
+      message: "You're hilarious!",
       joke: newJoke,
     });
-  } else {
-    const filePath = buildJokesPath();
-    const data = extractJokes(filePath);
-    res.status(200).json({ jokes: data });
   }
 }
 
