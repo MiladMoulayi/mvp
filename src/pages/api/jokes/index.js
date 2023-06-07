@@ -1,6 +1,15 @@
 import { MongoClient } from "mongodb";
 
 async function handler(req, res) {
+  let client;
+
+  try {
+    client = await MongoClient.connect(process.env.DB_AUTH);
+  } catch (error) {
+    res.status(500).json({ message: "Could not connect to database" });
+    return;
+  }
+
   if (req.method === "POST") {
     const { setup, punchline } = req.body;
 
@@ -8,17 +17,6 @@ async function handler(req, res) {
       setup: setup,
       punchline: punchline,
     };
-
-    let client;
-
-    try {
-      client = await MongoClient.connect(
-        "mongodb+srv://milad:WxvxmCo8HlrVRXAk@cluster0.hl61p42.mongodb.net/next-jokes?retryWrites=true&w=majority"
-      );
-    } catch (error) {
-      res.status(500).json({ message: "Could not connect to database" });
-      return;
-    }
 
     const db = client.db();
 
@@ -32,13 +30,31 @@ async function handler(req, res) {
         .json({ message: "Hold up! Our database broke it's funny bone..." });
     }
 
-    client.close();
-
     res.status(201).json({
       message: "You're hilarious!",
       joke: newJoke,
     });
   }
+
+  if (req.method === "GET") {
+    const db = client.db();
+    let jokesData;
+    try {
+      jokesData = await db
+        .collection("jokes")
+        .find()
+        .sort({ _id: -1 })
+        .toArray();
+    } catch (error) {
+      client.close();
+      res
+        .status(500)
+        .json({ message: "Hold up! Our database broke it's funny bone..." });
+    }
+    res.status(200).json({ jokes: jokesData });
+  }
+
+  client.close();
 }
 
 export default handler;

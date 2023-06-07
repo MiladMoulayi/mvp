@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { useRef, useState } from "react";
 
 function HomePage() {
@@ -51,7 +52,7 @@ function HomePage() {
       <button onClick={loadJokesHandler}>Get All of the Jokes!</button>
       <ul>
         {jokes.map((joke) => (
-          <li key={joke.id}>{joke.setup}</li>
+          <li key={joke._id}>{joke.setup}</li>
         ))}
       </ul>
     </div>
