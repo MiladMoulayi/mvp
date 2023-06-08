@@ -26,14 +26,4 @@ function JokesPage(props) {
   );
 }
 
-export async function getStaticProps() {
-  const filePath = buildJokesPath();
-  const data = extractJokes(filePath);
-  return {
-    props: {
-      jokes: data,
-    },
-  };
-}
-
 export default JokesPage;

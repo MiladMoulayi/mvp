@@ -18,10 +18,10 @@ async function handler(req, res) {
     const editJokeResponse = await editJoke(req, res);
     res.send(editJokeResponse);
   }
-  if (req.method === "DELETE") {
-    const deleteJokeResponse = await deleteJoke(req, res);
-    res.send(deleteJokeResponse);
-  }
+  // if (req.method === "DELETE") {
+  //   const deleteJokeResponse = await deleteJoke(req, res);
+  //   res.send(deleteJokeResponse);
+  // }
 }
 
 export default handler;
